@@ -1,60 +1,196 @@
-# Project Report: Hindi Assistant - Edge Computing for Vernacular Accessibility
+# PROJECT REPORT: HINDI ASSISTANT
 
 **Date**: February 20, 2026  
-**Authors**: rbhari karthik, roshni k  
-**Institution/Team**: Independent Submission  
+**Authors**: RBHARI KARTHIK, ROSHNI K, VIJITHA  
+**Institution**: CHENNAI INSTITUTE OF TECHNOLOGY  
 
 ---
 
 ## 1. Abstract
 The Hindi Assistant project presents a novel, resource-efficient implementation of a voice assistant designed specifically for the Raspberry Pi 4 (32-bit) environment. By integrating Kaldi-based speech recognition and ONNX-based synthesis, the project achieves a fully offline, low-latency interaction model in Hindi. The report details the hardware-level optimizations, intent-handling logic, and the technical novelties implemented to ensure peak performance on edge hardware.
 
-## 2. Problem Statement
-Most modern voice assistants (Alexa, Siri, Google Assistant) rely heavily on cloud processing and persistent high-speed internet. This approach has three major drawbacks for the Indian demographic:
-1.  **Privacy**: Users are often uncomfortable with voice data being sent to external servers.
-2.  **Latency**: Network dependence causes delays that break the flow of natural conversation.
-3.  **Accessibility**: Many regions lack the stable bandwidth required for cloud-based AI.
+## 2. Introduction
+This project implements an offline voice assistant system using VOSK for speech recognition and Piper TTS for speech synthesis on Raspberry Pi 4. The system processes voice commands locally without internet connectivity.
 
-Our project aims to solve these issues by bringing the entire AI stack to the **Edge**.
+### Software Requirements
+- **Operating System**: Raspberry Pi OS
+- **Programming Language**: Python 3
+- **Libraries Use**: VOSK, Piper TTS, PyAudio, datetime, os, json
 
-## 3. Technical Methodology
+### System Requirements
+- 4GB RAM minimum
+- USB Microphone
+- Speaker output
+- LINUX OS
 
-### 3.1 Speech-to-Text (STT) Strategy
-We utilized **Vosk**, an open-source speech recognition toolkit. The decision was based on its support for 20+ languages and its ability to run on small devices like the Raspberry Pi.
-- **Model**: `vosk-model-small-hi-0.22`, a 40MB model optimized for mobile and IoT devices.
-- **Sampling**: Audio is captured at 48kHz and downsampled through the Kaldi recognizer to 16kHz for efficient processing.
+## 3. Module Description 
 
-### 3.2 Information Extraction & Intent Handling
-The `assistant_rpi.py` core utilizes a hybrid intent handler. We implemented a pattern-matching system for high-velocity responses, coupled with state management (Awake/Sleep modes) to ensure the assistant only responds when prompted.
+### Module 1: Audio Capture Module
+- Captures voice from microphone
+- Uses PyAudio
 
-### 3.3 Text-to-Speech (TTS) Pipeline
-We implemented **Piper**, a fast, local neural text-to-speech system. Unlike traditional TTS which sounds robotic (Concatenative TTS), Piper provides natural, expressive voices using ONNX inference.
+### Module 2: Speech Recognition Module
+- Uses VOSK
+- Converts speech to text
+- Works offline
 
-## 4. Engineering Novelties & Innovations
+### Module 3: Command Processing Module
+- Identifies keywords
+- Executes respective function
+- Uses conditional logic
 
-### 4.1 Byte-Level ELF Header Patching
+### Module 4: Response Generation Module
+- Generates dynamic response
+- Example: Time module uses system clock
+
+### Module 5: Text-to-Speech Module
+- Uses Piper TTS
+- Converts text to voice
+
+## 4. System Architecture
+The overall system architecture of the Hindi Assistant is designed for maximum efficiency on edge devices like the Raspberry Pi 4. It operates entirely offline, utilizing a streamlined data pipeline that captures raw audio input via a USB microphone, processes the signal through VOSK for accurate speech-to-intent mapping, and finally synthesizes a high-fidelity natural voice response using the Piper TTS engine. The absence of cloud dependencies guarantees exceptional security, absolute data privacy, and a remarkably low latency interaction loop under 1.5 seconds.
+![System Architecture](media/system_architecture_pdf.png)
+
+## 5. Working of VOSK
+
+### Overview
+VOSK is an offline speech recognition toolkit used to convert spoken audio into text. In this project, VOSK processes real-time microphone input and converts it into text commands without requiring internet connectivity.
+
+### Internal Working of VOSK
+The speech recognition process in VOSK consists of the following stages:
+`Audio Input → Feature Extraction → Acoustic Model → Language Model → Text Output`
+
+### Feature Extraction (MFCC)
+When the user speaks, the microphone captures analog sound waves which are converted into digital signals. These signals are processed to extract important features called MFCC (Mel-Frequency Cepstral Coefficients).
+
+**Why MFCC?**
+- Human ears do not hear frequencies linearly.
+- MFCC converts audio into a format similar to human hearing.
+- It reduces unnecessary noise and keeps only important speech characteristics.
+
+**Steps in Feature Extraction:**
+1. Frame the audio signal into small chunks.
+2. Apply Fourier Transform.
+3. Convert frequencies to Mel scale.
+4. Extract cepstral coefficients.
+This creates a feature vector representing speech.
+
+### Acoustic Model
+The Acoustic Model maps extracted audio features to phonemes (basic sound units like "th", "aa", "m"). VOSK uses a trained neural network model that:
+- Takes MFCC features as input
+- Predicts phoneme probabilities
+- Handles variations in accents and noise
+
+**Example:**
+Audio: "what is the time"
+Phoneme sequence prediction: `w-ah-t ih-z dh-ax t-ay-m`
+
+### Language Model
+The Language Model improves accuracy by predicting the most probable word sequence. It:
+- Uses statistical probabilities
+- Checks grammar patterns
+- Corrects unlikely word combinations
+
+**Example:**
+If acoustic model predicts: `what is the thyme`
+Language model corrects it to: `what is the time`
+This increases recognition accuracy.
+
+### Offline Recognition
+VOSK works fully offline because:
+- All acoustic and language models are stored locally.
+- No cloud API is required.
+- No internet connection is needed.
+
+**Advantages of offline recognition:**
+- Low latency (fast response)
+- Data privacy
+- Works in remote areas
+- Secure processing
+
+### Output Generation
+After processing, VOSK outputs recognized text in JSON format:
+```json
+{"text": "what is the time"}
+```
+This text is passed to the Command Processing Module.
+
+## 6. Working of PIPER TTS
+
+### Overview
+Piper TTS is an offline neural text-to-speech engine used to convert response text into natural human-like speech. In this project, Piper speaks the response generated by the system.
+
+### Internal Working of Piper
+The text-to-speech process consists of:
+`Text Input → Text Preprocessing → Neural Model → Waveform Generation → Audio Output`
+
+### Text Preprocessing
+Before generating speech, the input text is cleaned and processed:
+- Remove unwanted symbols
+- Normalize numbers (e.g., "5:30" → "five thirty")
+- Expand abbreviations
+
+### Model Loading
+Piper uses:
+- Pre-trained neural voice model (`.onnx` file)
+- Configuration file (`.json`)
+
+When the system starts, the model is loaded into memory, voice parameters are initialized, and the sampling rate is configured. This ensures fast response time.
+
+### Neural Voice Synthesis
+Piper uses a neural network trained on human speech datasets. The model:
+- Converts phonemes into speech features.
+- Predicts pitch and tone.
+- Generates smooth and natural audio.
+It produces speech that sounds more realistic compared to traditional robotic TTS systems.
+
+### Audio Waveform Generation
+After neural processing:
+1. The model generates a digital audio waveform.
+2. The waveform is saved as a `.wav` file or streamed directly.
+3. The Raspberry Pi speaker plays the audio.
+
+**Example output:**
+Input text: "The current time is 6:45 PM"
+Output: 🔊 Natural spoken voice response.
+
+### Offline Speech Synthesis
+Piper works fully offline because voice models are stored locally, no internet API is used, and processing is done on Raspberry Pi.
+
+**Advantages:**
+- Secure & Fast
+- No dependency on cloud services
+- Suitable for embedded systems
+
+## 7. Engineering Novelties & Innovations
+
+### Byte-Level ELF Header Patching
 During development, we discovered that the pre-compiled `libvosk.so` binaries often fail on 32-bit Raspbian kernels due to stack execution protection policies. 
 **Our Solution**: Instead of recompiling the entire library (which takes hours), we wrote a custom **binary patcher** (`fix_vosk.py`). This script parses the ELF (Executable and Linkable Format) header and manually clears the executable bit on the `PT_GNU_STACK` segment. This allows the assistant to run on configurations where it would otherwise crash with an `Illegal Instruction`.
 
-### 4.2 Asynchronous Audio Callback & Piping
+### Asynchronous Audio Callback & Piping
 To ensure the mic doesn't "hear" the assistant's own voice (feedback), we implemented a global state machine (`is_speaking`). While speaking, the audio callback silently discards incoming microphone data. Furthermore, the synthesis output is **piped as a raw stream** from the TTS engine directly to the ALSA backend, eliminating the need for temporary `.wav` files and reducing latency by ~600ms.
 
-## 5. Hardware Utilization & Optimization
-- **CPU Management**: Used lightweight ONNX models to keep CPU usage below 40% during active synthesis.
-- **Memory Optimization**: Leveraged 32-bit pointers and compact models to ensure the entire system fits within standard Raspberry Pi RAM limits.
-- **ALSA Integration**: Custom configuration of `plughw` devices for stable audio input/output on diverse USB hardware.
+## 8. Summary of Capabilities
 
-## 6. Results and Performance
-- **Response Time**: Interaction latency is consistently under 1.5 seconds.
-- **Accuracy**: Demonstrated high proficiency in recognizing common Hindi dialects and sentence structures.
-- **Sustainability**: Consumes minimal power, making it suitable for battery-powered IoT applications.
+### Advantages
+- Works without internet
+- Fast response
+- Secure (no cloud data)
+- Low cost implementation
 
-## 7. Future Scope
-- **Domain Expansion**: Integrating local LLMs (like Llama-CPP) for more complex conversational abilities.
-- **Hardware Integration**: Controlling GPIO pins (lights, fans) via Hindi voice commands for Home Automation.
-- **Multilingual Support**: Adding support for Tamil, Telugu, and other Indian languages using the same architecture.
+### Limitations
+- Limited vocabulary
+- No complex conversation
+- Depends on microphone quality
+- Offline weather data limitations
 
-## 8. Conclusion
+## 9. Future Scope
+- **AI Integration**: Add chatbot model / local LLMs (like Llama-CPP) for conversational abilities.
+- **Hardware Integration**: Controlling GPIO pins (lights, fans) via voice commands for Home Automation. 
+- **Expansion**: Add local database and multilingual support (Tamil, Telugu, etc).
+
+## 10. Conclusion
 The Hindi Assistant demonstrates that with creative engineering optimizations—such as binary patching and stream piping—it is possible to run sophisticated AI models on low-cost edge hardware. This project paves the way for accessible, private, and localized AI assistants for everyone.
 
 ---

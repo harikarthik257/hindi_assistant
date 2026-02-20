@@ -1,0 +1,235 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
+
+/* This controls the actual PDF page margins within Puppeteer */
+@page {
+    margin: 8mm 10mm;
+}
+
+body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    line-height: 1.6;
+    color: #334155;
+    padding: 0;
+    margin: 0;
+    font-size: 10.5pt;
+    text-align: left;
+
+    /* Elegant left border styling across the entire document */
+    border-left: 6px solid #0f172a;
+    padding-left: 5mm;
+}
+
+/* Adds a striking color bar at the very top of each page */
+body::before {
+    content: "";
+    display: block;
+    height: 6px;
+    background: linear-gradient(90deg, #3b82f6, #8b5cf6, #ec4899);
+    position: absolute;
+    top: -8mm;
+    left: -10mm;
+    /* Counteracts the @page margin to stretch fully */
+    right: -10mm;
+}
+
+/* Premium Typography for Headers */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: 'Playfair Display', serif;
+    color: #0f172a;
+    margin-top: 1.8em;
+    margin-bottom: 0.5em;
+    page-break-after: avoid;
+}
+
+/* Ultra-Modern Title Section */
+h1 {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 900;
+    font-size: 34pt;
+    text-align: left;
+    margin-top: 0;
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+    letter-spacing: -1px;
+    line-height: 1.1;
+
+    /* Stunning Gradient Text Effect */
+    background: -webkit-linear-gradient(45deg, #0f172a, #3b82f6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+h2 {
+    font-size: 18pt;
+    font-weight: 700;
+    color: #1e293b;
+    border-bottom: 2px solid #e2e8f0;
+    padding-bottom: 0.3em;
+    margin-bottom: 1em;
+    display: inline-block;
+}
+
+h3 {
+    font-size: 14pt;
+    font-style: italic;
+    color: #475569;
+}
+
+p {
+    margin-bottom: 1.25em;
+}
+
+strong {
+    font-weight: 700;
+    color: #0f172a;
+}
+
+/* Custom bullet points */
+ul {
+    list-style: none;
+    padding-left: 1rem;
+}
+
+ul li {
+    margin-bottom: 0.6em;
+    position: relative;
+    padding-left: 1.5rem;
+}
+
+ul li::before {
+    content: "■";
+    /* Geometric bullet */
+    color: #3b82f6;
+    font-size: 0.7em;
+    position: absolute;
+    left: 0;
+    top: 0.4em;
+}
+
+ol {
+    padding-left: 2em;
+}
+
+ol li {
+    margin-bottom: 0.6em;
+}
+
+/* Beautiful Code blocks */
+code {
+    background-color: #f8fafc;
+    color: #db2777;
+    padding: 0.2em 0.4em;
+    border-radius: 4px;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.85em;
+    border: 1px solid #e2e8f0;
+}
+
+pre {
+    background-color: #0f172a;
+    color: #f8fafc;
+    padding: 1.25em;
+    border-radius: 8px;
+    overflow-x: auto;
+    page-break-inside: avoid;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+pre code {
+    background-color: transparent;
+    color: inherit;
+    border: none;
+    padding: 0;
+}
+
+/* Stunning Blockquotes */
+blockquote {
+    border-left: 4px solid #8b5cf6;
+    background: linear-gradient(to right, #f5f3ff, transparent);
+    padding: 1em 1.5em;
+    color: #64748b;
+    font-style: italic;
+    margin: 1.5em 0;
+    border-radius: 0 8px 8px 0;
+}
+
+a {
+    color: #3b82f6;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+/* Custom styling for the first metadata paragraph */
+p:nth-of-type(1) {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 10pt;
+    font-weight: 600;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    background-color: #f8fafc;
+    border-left: 4px solid #cbd5e1;
+    padding: 1em 1.5em;
+    margin-bottom: 3em;
+    border-radius: 0 4px 4px 0;
+    display: inline-block;
+}
+
+/* Distinctive styling for references */
+/* Enhance page breaks: Prevent awkward splits of content */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    page-break-after: avoid;
+    page-break-inside: avoid;
+    break-after: avoid;
+    break-inside: avoid;
+}
+
+p,
+ul,
+ol,
+li,
+blockquote,
+pre {
+    page-break-inside: avoid;
+    break-inside: avoid;
+}
+
+/* Ensure sections stay together as much as possible */
+h2+p,
+h3+p,
+h2+ul,
+h3+ul {
+    page-break-before: avoid;
+    break-before: avoid;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+    page-break-inside: avoid;
+    break-inside: avoid;
+    display: block;
+    margin: 1.5em auto;
+}
+
+/* Added aggressive block isolation to fix random empty spaces */
+section,
+article,
+div {
+    page-break-inside: auto;
+}
+
+h2:last-of-type,
+h2:last-of-type+ol {
+    page-break-before: auto;
+}
