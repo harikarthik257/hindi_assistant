@@ -40,29 +40,34 @@ Supports real-time switching between high-fidelity male (**Rohan**) and female (
 ## 🏗️ System Architecture
 
 ```mermaid
-graph TD
-    subgraph "Hardware Layer"
-        Mic[Microphone Input]
-        Spk[Speaker Output]
+graph LR
+    subgraph Hardware ["User Interface (Hardware)"]
+        Mic["🎤 Microphone Input"]
+        Spk["🔊 Speaker Output"]
     end
 
-    subgraph "Core AI Engine (Offline)"
-        STT[Vosk STT Engine]
-        Intent[Rule-Based Intent Processor]
-        TTS[Piper TTS Engine]
+    subgraph Engine ["Core AI Stack (On-Device)"]
+        STT["🧠 Vosk STT Engine<br/>(Kaldi-based)"]
+        Intent["⚡ Logic Hub<br/>(Intent Processor)"]
+        TTS["🗣️ Piper TTS Engine<br/>(ONNX Inference)"]
     end
 
-    subgraph "Optimization Layer"
-        Patch[ELF Header Patcher]
-        Pipe[Unix Audio Pipe]
+    subgraph Optimization ["Optimization Layer"]
+        Patch["🛠️ ELF Patcher<br/>(Binary Fix)"]
+        Pipe["🌊 Unix Audio Pipe<br/>(Zero-Latency)"]
     end
 
-    Mic -->|Raw 16kHz| STT
-    STT -->|Text| Intent
-    Intent -->|Response String| TTS
-    TTS -->|Raw Audio Stream| Pipe
+    Mic ---|Raw 16kHz Audio| STT
+    STT -->|Localized Text| Intent
+    Intent -->|Synthesis String| TTS
+    TTS -->|PCM Stream| Pipe
     Pipe --> Spk
-    Patch -.->|One-time Fix| STT
+    
+    Patch -.->|Patching libvosk.so| STT
+    
+    style Hardware fill:#f9f,stroke:#333,stroke-width:2px
+    style Engine fill:#bbf,stroke:#333,stroke-width:2px
+    style Optimization fill:#dfd,stroke:#333,stroke-width:2px
 ```
 
 ---
