@@ -1,0 +1,20 @@
+[Unit]
+Description=Hindi Voice Assistant
+After=sound.target
+# Start as soon as sound is ready, don't wait for everything else
+
+[Service]
+Type=simple
+User=pi
+WorkingDirectory=/home/pi/hindi_assistant
+# Reduced sleep from 10s to 3s for faster confirmation
+ExecStartPre=/bin/sleep 3
+ExecStart=/usr/bin/python3 /home/pi/hindi_assistant/assistant_rpi.py
+Environment=PYTHONUNBUFFERED=1
+Restart=always
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,22 @@
+# Virtual Environment
+Lib/
+Scripts/
+Include/
+pyvenv.cfg
+__pycache__/
+*.py[cod]
+
+# Audio Artifacts (Temporary)
+*.wav
+!music/song.wav
+
+# Large Models/Binaries (Should be downloaded via setup_rpi.sh)
+piper/
+vosk-model-small-hi-0.22/
+.piper/
+
+# OS/System files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
