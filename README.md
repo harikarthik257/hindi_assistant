@@ -109,8 +109,6 @@ python3 fix_vosk.py
 *   **rbhari karthik** - *Architect & Lead Developer* ([GitHub](https://github.com/harikarthik257))
 *   **roshni k** - *NLP & Testing Specialist*
 
-## 📜 License
-Distribute under the MIT License. See `LICENSE` for more information.
 
 ---
 *Developed for the 2026 Hackathon - Empowering the Next Billion.*
